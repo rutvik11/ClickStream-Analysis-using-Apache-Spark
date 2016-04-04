@@ -1,0 +1,334 @@
+________________________________________________________________________________________________________________________________
+
+## Installation of Apache Spark in linux machine (Ubuntu)
+________________________________________________________________________________________________________________________________
+
+Step-1 Install Java Development Toolkit (JDK 6/7/8)
+
+-->Press Ctrl+Alt+T on your keyboard to open a terminal window. When it opens, copy and paste the command below and hit enter. Input your user password when prompts and it will add the PPA repository into your system.
+
+1. sudo add-apt-repository ppa:webupd8team/java
+
+2. After that, update package lists via: (if needed)
+   sudo apt-get update
+
+3. To install Oracle Java 8, run:
+   sudo apt-get install oracle-java8-installer
+
+****Change the number 8 to 6 (or 7) in the code to install Java 6 (or 7)*****
+
+4. Also ensure your JAVA_HOME variable has been set to:
+
+   /usr/lib/jvm/java-8-oracle (if dont know how to add PATH go at the bottom of the document)
+
+5. Finally check whether everyting is OK:
+   java -version
+   
+   It will output something like below:
+-------------------------------------------------------------------------------------
+   java version "1.8.0_60"
+   Java(TM) SE Runtime Environment (build 1.8.0_60-b27)
+   Java HotSpot(TM) 64-Bit Server VM (build 25.60-b23, mixed mode)
+-------------------------------------------------------------------------------------
+
+Note:- You can also use Ubuntu software centre to install JDK but remember when you install JDK from centre "javac" wont get installed which might create problems in future while building spark.
+
+Refer for more installation details - 
+a. http://askubuntu.com/questions/521145/how-to-install-oracle-java-on-ubuntu-14-04
+b. http://askubuntu.com/questions/175514/how-to-set-java-home-for-openjdk
+c. http://ubuntuhandbook.org/index.php/2014/02/install-oracle-java-6-7-or-8-ubuntu-14-04/
+
+___________________________________________________________________________________________________________________________________
+___________________________________________________________________________________________________________________________________
+
+Step-2 Install Scala (Probably install scala 2.10.4)
+
+--> There are preferably two ways to install scala
+
+Note- If you install scala from Ubuntu Software Centre and get scala 2.9.2 installed you might face some errors of unresolved dependencies while submitting your spark application with the help of "sbt". So i prefer install scala version 2.10.4, its safe.
+
+### One way (older scala version will be install, which might also be good in some scenarios as they are more stable one i prefer scala 2.10.4 or older if installing spark version 1.5.1 or older)
+
+1. Press Ctrl+Alt+T on your keyboard to open a terminal window. When it opens, copy and paste the command below and hit enter.
+   sudo apt-get install scala
+
+_________________________________________
+_________________________________________
+         
+                 OR
+_________________________________________
+_________________________________________
+
+1. Open Ubuntu Software centre and search for scala. Further click for more info check the version of scala (make sure its not 2.11.4 or above as might create further issues while installing spark 1.5.0 or above or below)
+
+2. Click on Install and wait once its done.
+
+3. Press Ctrl+Alt+T on your keyboard to open a terminal window. When it opens, copy and paste the command below and hit enter.
+   $ scala
+
+4. If everything is ok, you will see.
+
+------------------------------------------------------------------------------------
+
+Welcome to Scala version 2.9.2 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_60).
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> 
+
+-------------------------------------------------------------------------------------
+ 
+### 2nd Way 
+
+1. Press Ctrl+Alt+T on your keyboard to open a terminal window. When it opens, copy and paste the command below and hit enter.
+
+   wget http://www.scala-lang.org/files/archive/scala-2.10.4.deb
+   sudo dpkg -i scala-2.10.4.deb
+   sudo apt-get update
+   sudo apt-get install scala
+
+*****Change the number 2.10.4 to 2.11.4 (or 2.9.2) in the code to install scala 2.11.4 (or 2.9.2)*****
+
+Refer for more installation details-sudo apt-get install maven
+a. https://gist.github.com/visenger/5496675
+
+_____________________________________________________________________________________________________________________________________
+_____________________________________________________________________________________________________________________________________
+
+Step-3 Install Apache maven 3.3.3 and above
+
+--> There are preferably 2 ways
+
+### One Way
+
+1. Press Ctrl+Alt+T on your keyboard to open a terminal window. When it opens, copy and paste the command below and hit enter.
+   Download the maven source code
+   wget http://ftp.wayne.edu/apache/maven/maven-3/3.3.3/binaries/apache-maven-3.3.3-bin.tar.gz
+
+2. Now install maven 
+   sudo mkdir /usr/local/apache-maven
+   sudo mv apache-maven-3.3.3-bin.tar.gz /usr/local/apache-maven
+   sudo tar -xzvf /usr/local/apache-maven-3.3.3-bin.tar.gz -C /usr/local/apache-maven/
+   sudo update-alternatives --install /usr/bin/mvn mvn /usr/local/apache-maven-3.3.3/bin/mvn 1
+   
+3. Enter the following command:
+
+   $ mvn -version
+
+4. If everything is perfect. You will see something like below:-
+
+--------------------------------------------------------------------------------------------
+
+   Apache Maven 3.3.3 (7994120775791599e205a5524ec3e0dfe41d4a06; 2015-04-22T17:27:37+05:30)
+   Maven home: /usr/local/apache-maven-3.3.3
+   Java version: 1.8.0_60, vendor: Oracle Corporation
+   Java home: /usr/lib/jvm/java-8-oracle/jre
+   Default locale: en_IN, platform encoding: UTF-8
+   OS name: "linux", version: "3.13.0-24-generic", arch: "amd64", family: "unix"
+
+---------------------------------------------------------------------------------------------
+
+### 2nd way
+
+1. Press Ctrl+Alt+T on your keyboard to open a terminal window. When it opens, copy and paste the command below and hit enter.
+
+   sudo apt-get install maven
+
+2. And follow the futher steps as mentioned on the terminal
+
+3. Enter 
+   
+   $ mvn -version **to check if its correct or not**
+
+Note- If your OS is older you may turn up installing older version of maven and may create problem further installing spark.
+
+Refer for more installation details-
+a. http://stackoverflow.com/questions/15630055/how-to-install-maven-3-on-ubuntu-15-04-14-10-14-04-lts-13-10-13-04-12-10-12-04-b
+b. https://wiki.opendaylight.org/view/Install_On_Ubuntu_14.04
+c. http://basicgroundwork.blogspot.in/2015/05/installing-maven-333-on-ubuntu-1504.html
+
+____________________________________________________________________________________________________________________________________
+____________________________________________________________________________________________________________________________________
+
+Step-4 Install Simple Build Tool (sbt)
+
+--> Ubuntu and other Debian-based distributions use the DEB format, but usually you don’t install your software from a local DEB file. Instead they come with package managers both for the command line (e.g. apt-get, aptitude) or with a graphical user interface (e.g. Synaptic). Run the following from the terminal to install sbt (You’ll need superuser privileges to do so, hence the sudo).
+
+1. Press Ctrl+Alt+T on your keyboard to open a terminal window. When it opens, copy and paste the command below and hit enter.
+
+   echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+   sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 642AC823
+   sudo apt-get update
+   sudo apt-get install sbt
+
+2. Package managers will check a number of configured repositories for packages to offer for installation. sbt binaries are published to Bintray, and conveniently Bintray provides an APT repository. You just have to add the repository to the places your package manager will check.  
+
+3. Once sbt is installed, you’ll be able to manage the package in aptitude or Synaptic after you updated their package cache. You should also be able to see the added repository at the bottom of the list in System Settings -> Software & Updates -> Other Software:
+
+4. Check whether is it installed or not by running following:
+   
+   $ sbt -version
+
+Refer for more installation details-
+a. http://www.scala-sbt.org/0.13/tutorial/Installing-sbt-on-Linux.html
+
+_____________________________________________________________________________________________________________________________________
+_____________________________________________________________________________________________________________________________________ 
+
+Step-5 Installing Apache Spark
+
+1. Open your web browser and enter the following link.
+ 
+   http://spark.apache.org/downloads.html
+
+2. Choose the package type as : Source Code [can build several hadoop versions]
+
+3. Choose download type as: Direct Download
+
+4. Then Download
+
+5. Unzip the file once the download is over.
+
+6. Open the readme.md file present in the spark folder and follow the steps mentioned.
+
+Note- Before running the commands check whether you have properly installed JDK, Scala, Maven and sbt.
+
+7. If all your prior installations are correct then after running "build/mvn -DskipTests clean package" from your spark folder you should get "BUILD SUCCESSFULL". Be patient building spark can take upto 6hrs depending upon your internet speed.
+
+8. If "BUILD FAILURE" occurs probably you may have gone out of memory (max heap size is reached), go at the bottom of the document to see how to change the heap space. OR . "BUILD FAILURE" can occur if maven's compatible version is not installed, if maven2 is installed, try to get maven-3.3.3 or above.
+
+9. If all has gone well so after running "bin/spark-shell" from spark folder you should see the following:
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+$ bin/spark-shell
+
+log4j:WARN No appenders could be found for logger (org.apache.hadoop.metrics2.lib.MutableMetricsFactory).
+log4j:WARN Please initialize the log4j system properly.
+log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
+Using Spark's repl log4j profile: org/apache/spark/log4j-defaults-repl.properties
+To adjust logging level use sc.setLogLevel("INFO")
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 1.5.1
+      /_/
+
+Using Scala version 2.10.4 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_60)
+Type in expressions to have them evaluated.
+Type :help for more information.
+15/10/03 21:05:02 WARN Utils: Your hostname, rutvik-ThinkPad-R400 resolves to a loopback address: 127.0.1.1; using 192.168.1.3 instead (on interface wlan0)
+15/10/03 21:05:02 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+15/10/03 21:05:06 WARN MetricsSystem: Using default name DAGScheduler for source because spark.app.id is not set.
+Spark context available as sc.
+SQL context available as sqlContext.
+
+scala> 
+
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+Refer for more details-
+a. http://spark.apache.org/docs/latest/quick-start.html
+
+10. Spark interactive shell has only sparkcontext and sqlcontext. So if you have to use streaming applications or graphX you need to submit the application to spark keep it running in background and to exceute sparkstreamingcontext(ssc). Hence you need to use "spark-submit" for submitting application.
+
+--------------------------------
+   Using spark-submit   (Refer to the video link added below to have better understanding)
+--------------------------------
+
+## If using scala programming language.
+
+a. You need to first compile the application before submitting to spark with the help of "sbt".
+
+b. Follow these steps to compile the application first: (lets say your app name is sparksample)
+
+   mkdir sparksample  ## create the directory name sparksample
+   cd sparksample/    ## Go in to that directory
+   mkdir src          ## create a src folder inside 
+   mkdir src/main/    ## create a subfolder main inside src
+   mkdir src/main/scala  ## create the following internal folders
+   vi sparksample.sbt ## this is an important step (Refer this link to how to use "vi" editor - http://www.cs.rit.edu/~cslab/vi.html)
+   
+c. Once the "vi" editor is open add the following:
+
+   ------------------------------------------------------------------------
+   name := "Spark Sample"
+
+   version := "1.0"
+
+   scalaVersion := "2.10.4"
+
+   libraryDependencies += "org.apache.spark" %% "spark-core" % "1.5.1" 
+   -------------------------------------------------------------------------
+
+Note- Change the scala version and spark core version according to your system.
+
+d. After you have pasted the above library dependencies in the sparksample.sbt, press Esc if you are in insert mode and enter :(colon), you will come at the bottom of the page and then enter "wq" and hit enter.
+
+e. Then enter "$ sbt" and go to your spark directory "/spark/examples/src/main/scala/org/apache/spark/examples/SparkPi.scala" copy the code and paste in a new file named (say) "SparkAppPiCalculation.scala" then enter "> compile" and wait for sometime it will automatically download lots of jars and may take about an hr or so and compile "SparkAppPiCalculation.scala".
+
+f. If everything is all correct, you will get something as below:
+
+   --------------------------------------------------------------------------------------------    
+   [info] Compiling 1 Scala source to /home/rutvik/sparksample/target/scala-2.10/classes...
+   [info] 'compiler-interface' not yet compiled for Scala 2.10.4. Compiling...
+   [info]   Compilation completed in 22.643 s
+   [success] Total time: 2569 s, completed 3 Oct, 2015 9:55:05 PM
+   ---------------------------------------------------------------------------------------------
+
+g. Then enter "> package"
+
+   ---------------------------------------------------------------------------------------------
+   > package
+   [info] Packaging /home/rutvik/sparksample/target/scala-2.10/spark-sample_2.10-1.0.jar ...
+   [info] Done packaging.
+   [success] Total time: 2 s, completed 3 Oct, 2015 9:59:08 PM
+   ---------------------------------------------------------------------------------------------
+
+h. Enter "> exit"
+
+i. Now you have compiled and build jar file of your scala application at this location " /home/rutvik/sparksample/target/scala-2.10/spark-sample_2.10-1.0.jar"
+
+f. Stay in the same "sparksample" directory and run the following command:
+
+   $ ../spark/bin/spark-submit target/scala-2.10/spark-sample_2.10-1.0.jar
+
+g. If the program is corrrectly written you will see desired output on the console.
+
+
+Refer for more details-
+a. https://www.youtube.com/watch?v=1BeTWT8ADfE
+b. http://spark.apache.org/docs/latest/quick-start.html#self-contained-applications
+
+______________________________________________________________________________________________________________________________________
+______________________________________________________________________________________________________________________________________
+
+
+********EXTRA INFORMATION ON HOW TO ADD PATH IN UBUNTU**********
+
+1. To add the PATH to the environment. Enter the following:
+   
+   $ sudo gedit /etc/environment
+
+2. Add the JAVA_HOME as "export JAVA_HOME = /usr/lib/jvm/java-8-oracle"
+
+3. And similarly add others as follows:
+   
+   ----------------------------------------------------------
+   export M2_HOME=/usr/local/apache-maven-3.3.3
+
+   export MAVEN_OPTS="-Xms512m -Xmx1024m"  ## to adjust the heap size by default use - "-Xms256m -Xmx512m" can increase as shown. 
+
+   export SPARK_HOME="$HOME/spark"
+   ----------------------------------------------------------
+
+4. After addong these press CTRL+S (save) and close and then enter "$ . /etc/environment"
+
+5. You can also use:
+   
+   $ vim ~/.bashrc ## to add the path to the environment but would be difficult for you to add here better use first method.
+
+_____________________________________________________________________________________________________________________________________
+_____________________________________________________________________________________________________________________________________
